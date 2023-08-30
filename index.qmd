@@ -1,5 +1,5 @@
 ---
-title: "finedtech"
+title: "finedtech by David Harper, CFA, FRM"
 listing:
   contents: posts
   sort: "date desc"

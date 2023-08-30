@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  title: "finedtech"
+  title: "finedtech by David Harper, CFA, FRM"
   navbar:
     right:
       - icon: github
