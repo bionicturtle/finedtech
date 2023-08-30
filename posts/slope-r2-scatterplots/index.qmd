@@ -1,0 +1,195 @@
+---
+title: "Post With Code"
+author: "David Harper"
+date: "2023-08-29"
+categories: [code, ggplot]
+
+---
+
+My scatters
+
+```{r}
+# First scenario
+
+# set.seed(87654321)
+set.seed(54321)
+
+library(tidyverse)
+library(patchwork)
+library(RColorBrewer)
+
+generate_data <- function(n = 12) {
+  # Generate a random vector of n months for the market's excess returns
+  market_excess_returns <- rnorm(n, 0.05, 0.05)
+  
+  # For the second vector, add a lot of random noise to achieve high beta but low R^2
+  index_1_returns <- 1.2 * market_excess_returns + rnorm(n, 0, 0.12)
+  
+  # For the third vector, add a small amount of random noise to a scaled down version of market's returns
+  index_2_returns <- 0.15 * market_excess_returns + rnorm(n, 0, 0.01)
+  
+  # Return as a data frame
+  df <- data.frame(
+    market_excess_returns = market_excess_returns,
+    index_1_returns = index_1_returns,
+    index_2_returns = index_2_returns
+  )
+  
+  return(df)
+}
+
+# Example usage:
+# df <- generate_data(12)
+# print(df)
+
+df <- generate_data(12)
+
+# Regress index_1_returns against market_excess_returns
+model_1 <- lm(index_1_returns ~ market_excess_returns, data=df)
+
+# Extract slope (beta) and R^2 for model_1
+beta_1 <- coef(model_1)['market_excess_returns']
+r2_1 <- summary(model_1)$r.squared
+
+# Regress index_2_returns against market_excess_returns
+model_2 <- lm(index_2_returns ~ market_excess_returns, data=df)
+
+# Extract slope (beta) and R^2 for model_2
+beta_2 <- coef(model_2)['market_excess_returns']
+r2_2 <- summary(model_2)$r.squared
+
+# Print results
+
+label_1 <- sprintf("β = %.2f and R2 = %.2f", beta_1, r2_1)
+label_2 <- sprintf("β = %.2f and R2 = %.2f", beta_2, r2_2)
+
+bound_low <- -0.05
+bound_high <- 0.15
+
+p1 <- df %>% ggplot(aes(x = market_excess_returns, y = index_1_returns)) + 
+    geom_point(color = "darkblue") +
+    geom_smooth(method = "lm", se = TRUE, color = "darkorange", linewidth = 1.2) +
+    coord_cartesian(xlim = c(bound_low*3, bound_high*3), ylim = c(bound_low*3, bound_high*3)) + 
+    annotate("text", x = -0.12, y = 0.42, label = label_1, fontface="bold", hjust = 0) +
+    xlab("Market's excess return") +
+    ylab("Index 1") +
+    theme_minimal()
+
+p2 <- df %>% ggplot(aes(x = market_excess_returns, y = index_2_returns)) + 
+    geom_point(color = "darkblue") +
+    geom_smooth(method = "lm", se = TRUE, color = "darkorange", linewidth = 1.2) + 
+    coord_cartesian(xlim = c(bound_low, bound_high), ylim = c(bound_low, bound_high)) + 
+    annotate("text", x = -0.04, y = 0.14, label = label_2, fontface="bold", hjust = 0) +
+    xlab("Market's excess return") +
+    ylab("Index 2") +
+    theme_minimal()
+
+p1 + p2
+
+
+# Example usage:
+# plot1 <- plot_regression(df, "market_excess_returns", "index_1_returns")
+# print(plot1)
+
+# plot2 <- plot_regression(df, "market_excess_returns", "index_2_returns")
+# print(plot2)
+
+```
+
+```{r}
+# Second scenario
+
+set.seed(97531)
+
+# library(tidyverse)
+# library(patchwork)
+
+generate_data <- function(n = 12) {
+  # Generate a random vector of n months for the market's excess returns
+  market_excess_returns <- rnorm(n, 0.05, 0.05)
+  
+  # For the second vector, add a lot of random noise to achieve high beta but low R^2
+  index_1_returns <- 1.8 * market_excess_returns + rnorm(n, 0, 0.02)
+  
+  # For the third vector, add a small amount of random noise to a scaled down version of market's returns
+  index_2_returns <- 0.1 * market_excess_returns + rnorm(n, 0, 0.10)
+  
+  # Return as a data frame
+  df <- data.frame(
+    market_excess_returns = market_excess_returns,
+    index_1_returns = index_1_returns,
+    index_2_returns = index_2_returns
+  )
+  
+  return(df)
+}
+
+# Example usage:
+# df <- generate_data(12)
+# print(df)
+
+df <- generate_data(12)
+
+# Regress index_1_returns against market_excess_returns
+model_1 <- lm(index_1_returns ~ market_excess_returns, data=df)
+
+# Extract slope (beta) and R^2 for model_1
+beta_1 <- coef(model_1)['market_excess_returns']
+r2_1 <- summary(model_1)$r.squared
+
+# Regress index_2_returns against market_excess_returns
+model_2 <- lm(index_2_returns ~ market_excess_returns, data=df)
+
+# Extract slope (beta) and R^2 for model_2
+beta_2 <- coef(model_2)['market_excess_returns']
+r2_2 <- summary(model_2)$r.squared
+
+# Print results
+
+label_1 <- sprintf("β = %.2f and R2 = %.2f", beta_1, r2_1)
+label_2 <- sprintf("β = %.2f and R2 = %.2f", beta_2, r2_2)
+
+bound_low <- -0.05
+bound_high <- 0.15
+
+p3 <- df %>% ggplot(aes(x = market_excess_returns, y = index_1_returns)) + 
+    geom_point(color = "darkblue") +
+    geom_smooth(method = "lm", se = TRUE, color = "darkorange", linewidth = 1.2) +
+    coord_cartesian(xlim = c(bound_low*3, bound_high*3), ylim = c(bound_low*3, bound_high*3)) + 
+    annotate("text", x = -0.12, y = 0.42, label = label_1, fontface="bold", hjust = 0) +
+    xlab("Market's excess return") +
+    ylab("Index 1") +
+    theme_minimal()
+
+p4 <- df %>% ggplot(aes(x = market_excess_returns, y = index_2_returns)) + 
+    geom_point(color = "darkblue") +
+    geom_smooth(method = "lm", se = TRUE, color = "darkorange", linewidth = 1.2) + 
+    coord_cartesian(xlim = c(bound_low, bound_high), ylim = c(bound_low, bound_high)) + 
+    annotate("text", x = -0.04, y = 0.14, label = label_2, fontface="bold", hjust = 0) +
+    xlab("Market's excess return") +
+    ylab("Index 2") +
+    theme_minimal()
+
+p3 + p4
+
+# Example usage:
+# plot1 <- plot_regression(df, "market_excess_returns", "index_1_returns")
+# print(plot1)
+
+# plot2 <- plot_regression(df, "market_excess_returns", "index_2_returns")
+# print(plot2)
+```
+```{r}
+
+p1 <- p1 + theme(axis.title = element_blank())
+p2 <- p2 + theme(axis.title = element_blank())
+p3 <- p3 + theme(axis.title = element_blank())
+p4 <- p4 + theme(axis.title = element_blank())
+
+
+(p1 + p2) / (p3 + p4)
+
+(p3 + p1) / (p2 + p4)
+
+
+```
